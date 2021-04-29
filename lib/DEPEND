@@ -1,0 +1,5 @@
+Place the following JARs into this directory:
+- servlet-api.jar (provided by your servlet container)
+- org.unclesniper.confhoard.core.jar (https://github.com/UncleSniper/confhoard)
+- org.unclesniper.logging.jar (https://github.com/UncleSniper/juslog)
+- org.unclesniper.ogdl.jar (https://github.com/UncleSniper/jogdl)

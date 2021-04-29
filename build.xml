@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<project name="confhoard-servlet" default="dist" basedir=".">
+
+	<property name="src" location="src"/>
+	<property name="bin" location="bin"/>
+	<property name="lib" location="lib"/>
+	<property name="dist" location="dist"/>
+	<property name="pkgdist" location="${dist}/org.unclesniper.confhoard.servlet.jar"/>
+	<property name="res" location="res"/>
+	<property name="binres" location="${bin}/org/unclesniper/confhoard/servlet/resource"/>
+	<property name="warbin" location="warbin"/>
+	<property name="warpkg" location="${dist}/confhoard.war"/>
+	<property name="doc" location="doc"/>
+	<property name="api.doc.visibility" value="private"/>
+	<property name="javadoc.jre.package.list" location="jre8.packages"/>
+	<property name="javadoc.jre.url" value="http://docs.oracle.com/javase/6/docs/api/"/>
+
+	<path id="build.classpath">
+		<fileset dir="${lib}" includes="**/*.jar"/>
+		<pathelement path="${bin}"/>
+	</path>
+
+	<target name="init">
+		<mkdir dir="${bin}"/>
+		<mkdir dir="${dist}/lib"/>
+		<mkdir dir="${doc}/api"/>
+		<mkdir dir="${warbin}/WEB-INF/lib"/>
+	</target>
+
+	<target name="compile" depends="init" description="compile the source">
+		<javac srcdir="${src}" destdir="${bin}" debug="on" includeantruntime="no"
+				classpathref="build.classpath">
+			<compilerarg value="-Xlint:unchecked"/>
+			<compilerarg value="-Xlint:deprecation"/>
+		</javac>
+	</target>
+
+	<target name="dist" depends="compile" description="generate the distribution">
+		<copy todir="${binres}">
+			<fileset dir="${res}">
+				<filename name="**/*"/>
+			</fileset>
+		</copy>
+		<jar jarfile="${pkgdist}" basedir="${bin}"/>
+		<copy todir="${dist}/lib">
+			<fileset dir="${lib}">
+				<filename name="**/*.jar"/>
+				<exclude name="**/servlet-api*.jar"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="war" depends="dist" description="generate Tomcat warball">
+		<copy todir="${warbin}/WEB-INF/lib" flatten="true">
+			<fileset dir="${dist}">
+				<filename name="**/*.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="${warbin}/WEB-INF" file="web.xml"/>
+		<jar jarfile="${warpkg}" basedir="${warbin}"/>
+	</target>
+
+	<target name="doc" depends="init" description="generate documentation">
+		<javadoc sourcepath="${src}" destdir="${doc}/api" classpathref="build.classpath"
+				Windowtitle="confhoard-servlet API" access="${api.doc.visibility}">
+			<link href="${javadoc.jre.url}" packagelistLoc="${javadoc.jre.package.list}"/>
+		</javadoc>
+	</target>
+
+	<target name="clean" description="clean up">
+		<delete dir="${bin}"/>
+		<delete dir="${dist}"/>
+		<delete dir="${warbin}"/>
+		<delete dir="${doc}/api"/>
+	</target>
+
+</project>
