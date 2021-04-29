@@ -335,7 +335,35 @@ public class ConfHoardServlet extends HttpServlet implements WebConfigHolder {
 			stateWiring = ConfHoardServlet.DEFAULT_CONFSTATE_FILE;
 		webConfig = loadOGDL(webWiring, WebConfig.class);
 		managementState = new ConfManagementState();
-		managementState.setConfState(loadOGDL(stateWiring, ConfState.class));
+		ConfState confState = loadOGDL(stateWiring, ConfState.class);
+		String loggerKey = webConfig.getEffectiveLoggerKey();
+		String webConfigHolderKey = webConfig.getEffectiveWebConfigHolderKey();
+		Function<String, Object> params = key -> {
+			if(key == null)
+				return null;
+			Object override = webConfig.getDefaultRequestParameter(key);
+			if(override != null)
+				return override;
+			if(key.equals(loggerKey))
+				return webConfig.getLogger();
+			if(key.equals(webConfigHolderKey))
+				return this;
+			return null;
+		};
+		try {
+			confState.getLoadedStorage(managementState, params);
+		}
+		catch(IOException ioe) {
+			String message = ioe.getMessage();
+			throw new ServletException("I/O error loading storage" + (message == null || message.length() == 0
+					? "" : ": " + message), ioe);
+		}
+		catch(ConfHoardException che) {
+			String message = che.getMessage();
+			throw new ServletException("Error loading storage" + (message == null || message.length() == 0
+					? "" : ": " + message), che);
+		}
+		managementState.setConfState(confState);
 	}
 
 	@Override
