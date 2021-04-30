@@ -29,6 +29,7 @@ import org.unclesniper.confhoard.core.ConfHoardException;
 import org.unclesniper.confhoard.core.ConfManagementState;
 import org.unclesniper.confhoard.core.security.SlotAction;
 import org.unclesniper.confhoard.core.security.Credentials;
+import org.unclesniper.logging.StringAndExceptionLogMessage;
 import org.unclesniper.confhoard.core.SlotAccessForbiddenException;
 
 public class ConfHoardServlet extends HttpServlet implements WebConfigHolder {
@@ -53,6 +54,9 @@ public class ConfHoardServlet extends HttpServlet implements WebConfigHolder {
 
 	private static final LogSource HANDLECONFHOARDEXCEPTION_LOG_SOURCE
 			= LogSource.in(ConfHoardServlet.class, "handleConfHoardException");
+
+	private static final LogSource HANDLEINITEXCEPTION_LOG_SOURCE
+			= LogSource.in(ConfHoardServlet.class, "handleInitException");
 
 	private WebConfig webConfig;
 
@@ -354,16 +358,22 @@ public class ConfHoardServlet extends HttpServlet implements WebConfigHolder {
 			confState.getLoadedStorage(managementState, params);
 		}
 		catch(IOException ioe) {
-			String message = ioe.getMessage();
-			throw new ServletException("I/O error loading storage" + (message == null || message.length() == 0
-					? "" : ": " + message), ioe);
+			handleInitException("I/O error", ioe);
 		}
 		catch(ConfHoardException che) {
-			String message = che.getMessage();
-			throw new ServletException("Error loading storage" + (message == null || message.length() == 0
-					? "" : ": " + message), che);
+			handleInitException("Error", che);
 		}
 		managementState.setConfState(confState);
+	}
+
+	private void handleInitException(String prefix, Exception e) throws ServletException {
+		Logger logger = webConfig.getLogger();
+		if(logger == null)
+			logger.log(DefaultLogLevel.FATAL, ConfHoardServlet.HANDLEINITEXCEPTION_LOG_SOURCE,
+					(LogMessage)new StringAndExceptionLogMessage(prefix + " loading storage", e));
+		String message = e.getMessage();
+		throw new ServletException(prefix + " loading storage" + (message == null || message.length() == 0
+				? "" : ": " + message), e);
 	}
 
 	@Override
