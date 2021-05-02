@@ -138,7 +138,13 @@ public class WebConfig {
 
 	public Credentials authenticate(HttpServletRequest request) {
 		for(Authenticator authenticator : authenticators) {
-			Credentials credentials = authenticator.authenticate(request);
+			Credentials credentials;
+			try {
+				credentials = authenticator.authenticate(request);
+			}
+			catch(RuntimeException re) {
+				continue;
+			}
 			if(credentials != null)
 				return credentials;
 		}
