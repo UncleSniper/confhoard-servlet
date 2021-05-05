@@ -1,4 +1,4 @@
-package org.unclesniper.confhoard.servlet;
+package org.unclesniper.confhoard.servlet.security;
 
 import org.unclesniper.confhoard.core.security.Credentials;
 

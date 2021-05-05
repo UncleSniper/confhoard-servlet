@@ -1,4 +1,4 @@
-package org.unclesniper.confhoard.servlet;
+package org.unclesniper.confhoard.servlet.security;
 
 import java.util.Map;
 import java.util.HashMap;

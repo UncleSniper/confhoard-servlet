@@ -1,4 +1,4 @@
-package org.unclesniper.confhoard.servlet;
+package org.unclesniper.confhoard.servlet.security;
 
 import java.util.Base64;
 import java.nio.charset.StandardCharsets;

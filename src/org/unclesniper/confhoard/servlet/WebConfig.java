@@ -9,6 +9,7 @@ import java.util.Collections;
 import org.unclesniper.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import org.unclesniper.confhoard.core.security.Credentials;
+import org.unclesniper.confhoard.servlet.security.Authenticator;
 
 public class WebConfig {
 
