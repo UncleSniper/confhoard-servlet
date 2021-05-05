@@ -355,16 +355,22 @@ public class ConfHoardServlet extends HttpServlet implements WebConfigHolder {
 				return this;
 			return null;
 		};
+		managementState.setConfState(confState);
 		try {
 			confState.getLoadedStorage(SystemInternalCredentials.instance, managementState, params);
 		}
 		catch(IOException ioe) {
+			managementState.setConfState(null);
 			handleInitException("I/O error", ioe);
 		}
 		catch(ConfHoardException che) {
+			managementState.setConfState(null);
 			handleInitException("Error", che);
 		}
-		managementState.setConfState(confState);
+		catch(RuntimeException re) {
+			managementState.setConfState(null);
+			handleInitException("Error", re);
+		}
 	}
 
 	private void handleInitException(String prefix, Exception e) throws ServletException {
