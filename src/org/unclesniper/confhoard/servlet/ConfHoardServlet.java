@@ -31,6 +31,7 @@ import org.unclesniper.confhoard.core.security.SlotAction;
 import org.unclesniper.confhoard.core.security.Credentials;
 import org.unclesniper.logging.StringAndExceptionLogMessage;
 import org.unclesniper.confhoard.core.SlotAccessForbiddenException;
+import org.unclesniper.confhoard.core.security.SystemInternalCredentials;
 
 public class ConfHoardServlet extends HttpServlet implements WebConfigHolder {
 
@@ -355,7 +356,7 @@ public class ConfHoardServlet extends HttpServlet implements WebConfigHolder {
 			return null;
 		};
 		try {
-			confState.getLoadedStorage(managementState, params);
+			confState.getLoadedStorage(SystemInternalCredentials.instance, managementState, params);
 		}
 		catch(IOException ioe) {
 			handleInitException("I/O error", ioe);
