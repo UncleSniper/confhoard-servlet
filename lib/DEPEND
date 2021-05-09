@@ -3,3 +3,4 @@ Place the following JARs into this directory:
 - org.unclesniper.confhoard.core.jar (https://github.com/UncleSniper/confhoard)
 - org.unclesniper.logging.jar (https://github.com/UncleSniper/juslog)
 - org.unclesniper.ogdl.jar (https://github.com/UncleSniper/jogdl)
+- org.unclesniper.confhoard.ogdl.jar (https://github.com/UncleSniper/confhoard-ogdl)
